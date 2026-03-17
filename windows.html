@@ -1,0 +1,834 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Windows Desktop</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      .windows-body {
+        background-color: #0d4f9e;
+        background-image: url("Source/windows_7_202.jpg");
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-size: cover;
+      }
+
+      .windows-screen {
+        width: 100%;
+        height: 100%;
+        position: relative;
+      }
+
+      .desktop-icons {
+        position: absolute;
+        left: 14px;
+        top: 18px;
+        display: grid;
+        gap: 12px;
+        z-index: 120;
+      }
+
+      .desktop-app {
+        width: 82px;
+        border: none;
+        background: transparent;
+        color: #eef7ff;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.85);
+        font: inherit;
+        font-size: 0.78rem;
+        display: grid;
+        justify-items: center;
+        gap: 0.32rem;
+        cursor: pointer;
+      }
+
+      .desktop-app .desktop-icon {
+        width: 42px;
+        height: 42px;
+        background-repeat: no-repeat;
+        background-size: contain;
+        background-position: center;
+        filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.45));
+      }
+
+      .desktop-app .desktop-icon.chrome {
+        background-image: url("Source/chrome3.ico");
+      }
+
+      .desktop-app .desktop-icon.spotify {
+        background-image: url("Source/spotify2.ico");
+      }
+
+      .desktop-app .desktop-icon.movie {
+        background-image: url("Source/vista_movie.ico");
+      }
+
+      .taskbar {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 0 10px;
+        box-sizing: border-box;
+        background: linear-gradient(180deg, rgba(120, 193, 238, 0.85) 0%, rgba(45, 126, 199, 0.92) 50%, rgba(16, 86, 171, 0.95) 100%);
+        border-top: 1px solid rgba(209, 240, 255, 0.7);
+        box-shadow: 0 -1px 0 rgba(0, 28, 68, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+        backdrop-filter: blur(2px);
+        z-index: 1000;
+      }
+
+      .start-button {
+        width: 54px;
+        height: 42px;
+        border: none;
+        border-radius: 8px;
+        padding: 0;
+        display: grid;
+        place-items: center;
+        background: transparent;
+        cursor: pointer;
+      }
+
+      .start-logo {
+        width: 40px;
+        height: 40px;
+        object-fit: contain;
+        filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.35));
+      }
+
+      .task-icons {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .task-button {
+        width: 32px;
+        height: 32px;
+        border: none;
+        border-radius: 6px;
+        background: transparent;
+        padding: 0;
+        display: grid;
+        place-items: center;
+        cursor: pointer;
+      }
+
+      .task-button:hover,
+      .start-button:hover {
+        background-color: rgba(255, 255, 255, 0.14);
+      }
+
+      .task-icon {
+        width: 25px;
+        height: 25px;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 25px 25px;
+        filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.35));
+      }
+
+      .task-icon.spotify {
+        background-image: url("Source/spotify2.ico");
+      }
+
+      .task-icon.movie {
+        background-image: url("Source/vista_movie.ico");
+      }
+
+      .task-icon.chrome {
+        background-image: url("Source/chrome3.ico");
+      }
+
+      .clock {
+        margin-left: auto;
+        padding: 0 10px;
+        height: 30px;
+        border: 1px solid rgba(176, 226, 255, 0.55);
+        border-radius: 4px;
+        display: grid;
+        place-items: center;
+        color: #f2fbff;
+        font-size: 0.82rem;
+        background: linear-gradient(180deg, rgba(102, 179, 237, 0.75) 0%, rgba(33, 113, 186, 0.85) 100%);
+      }
+
+      .window-layer {
+        position: fixed;
+        inset: 0 0 48px 0;
+        z-index: 900;
+        pointer-events: none;
+      }
+
+      .app-window {
+        position: absolute;
+        width: min(620px, calc(100vw - 24px));
+        min-height: 340px;
+        border-radius: 8px;
+        border: 1px solid rgba(38, 77, 124, 0.9);
+        background: rgba(242, 248, 255, 0.62);
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+        box-shadow: 0 14px 34px rgba(5, 31, 56, 0.45);
+        overflow: hidden;
+        pointer-events: auto;
+      }
+
+      .app-window.start-menu-window {
+        width: min(460px, calc(100vw - 16px));
+        min-height: 440px;
+        border-radius: 10px 10px 0 0;
+        border-bottom: none;
+        background: rgba(32, 87, 146, 0.6);
+      }
+
+      .app-window.start-menu-window.is-opening {
+        animation: start-menu-slide-up 210ms ease-out;
+      }
+
+      .app-window.start-menu-window.is-closing {
+        animation: start-menu-slide-down 180ms ease-in forwards;
+      }
+
+      .window-titlebar {
+        height: 34px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 8px 0 10px;
+        color: #eff8ff;
+        font-size: 0.86rem;
+        font-weight: 600;
+        background: linear-gradient(180deg, #4e9be0 0%, #2d78bf 65%, #2569aa 100%);
+        cursor: move;
+        user-select: none;
+      }
+
+      .window-close {
+        width: 24px;
+        left: 8px;
+        bottom: 38px;
+        border-radius: 3px;
+        gap: 10px;
+        font-size: 0.9rem;
+        line-height: 1;
+        background: linear-gradient(180deg, #ef7878 0%, #c93b3b 100%);
+        cursor: pointer;
+        width: 92px;
+
+      .window-content {
+        padding: 1.1rem;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+        font-size: 0.98rem;
+        font-size: 0.8rem;
+      }
+
+        gap: 0.36rem;
+        margin: 0 0 0.55rem;
+        font-size: 1.2rem;
+      }
+
+        width: 52px;
+        height: 52px;
+      }
+
+      .window-content.windows-theme {
+        filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.45));
+        background: linear-gradient(155deg, rgba(30, 84, 141, 0.85) 0%, rgba(19, 50, 87, 0.78) 100%);
+      }
+
+      .start-menu {
+        display: grid;
+        grid-template-columns: 1.15fr 0.85fr;
+        gap: 0.9rem;
+        min-height: 390px;
+      }
+
+      .start-col {
+        border-radius: 9px;
+        padding: 0.7rem;
+        background: rgba(255, 255, 255, 0.14);
+      }
+
+      .start-col h3 {
+        margin: 0 0 0.6rem;
+        font-size: 0.95rem;
+      }
+
+      .start-list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        display: grid;
+        gap: 0.45rem;
+      }
+
+      .start-list li {
+        padding: 0.45rem 0.55rem;
+        border-radius: 6px;
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .window-content.spotify-theme {
+        color: #dfffe8;
+        background: linear-gradient(145deg, rgba(19, 38, 27, 0.8) 0%, rgba(14, 23, 20, 0.74) 100%);
+      }
+
+      .spotify-header {
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+        margin-bottom: 0.9rem;
+      }
+
+      .spotify-logo {
+        width: 40px;
+        height: 40px;
+        object-fit: contain;
+      }
+
+      .window-content.chrome-theme {
+        color: #1b2f44;
+        background: linear-gradient(180deg, rgba(241, 247, 255, 0.95) 0%, rgba(216, 231, 248, 0.86) 100%);
+      }
+
+      .chrome-shell {
+        border: 1px solid rgba(163, 181, 202, 0.75);
+        border-radius: 11px;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.66);
+      }
+
+      .chrome-topbar {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.45rem 0.65rem;
+        background: linear-gradient(180deg, rgba(242, 246, 252, 0.95) 0%, rgba(212, 225, 242, 0.92) 100%);
+        border-bottom: 1px solid rgba(167, 185, 206, 0.7);
+      }
+
+      .chrome-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: #9db5d2;
+      }
+
+      .chrome-address {
+        flex: 1;
+        border-radius: 999px;
+        padding: 0.4rem 0.8rem;
+        font-size: 0.82rem;
+        color: #344f6b;
+        background: rgba(255, 255, 255, 0.92);
+        border: 1px solid rgba(167, 185, 206, 0.85);
+      }
+
+      .chrome-card {
+        border-radius: 10px;
+        padding: 0.9rem;
+        background: transparent;
+        border: none;
+      }
+
+      .spotify-list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        display: grid;
+        gap: 0.55rem;
+      }
+
+      .spotify-list li {
+        padding: 0.55rem 0.7rem;
+        border-radius: 7px;
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .spotify-embed-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.65rem;
+        margin-top: 0.8rem;
+      }
+
+      .spotify-embed-grid iframe {
+        width: 100%;
+        height: 152px;
+        border: 0;
+        border-radius: 10px;
+      }
+
+      .spotify-profile {
+        margin: 0 0 0.8rem;
+        font-size: 0.9rem;
+      }
+
+      .spotify-profile a {
+        color: #8effb1;
+      }
+
+      .window-content.letterboxd-theme {
+        color: #eef2f7;
+        background: linear-gradient(145deg, rgba(22, 27, 33, 0.8) 0%, rgba(11, 14, 19, 0.74) 100%);
+      }
+
+      .lb-header {
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+        margin-bottom: 0.9rem;
+      }
+
+      .lb-dot {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+      }
+
+      .lb-dot.orange {
+        background-color: #f47b20;
+      }
+
+      .lb-dot.green {
+        background-color: #43c86f;
+      }
+
+      .lb-dot.blue {
+        background-color: #00a6dc;
+      }
+
+      .lb-poster-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.7rem;
+      }
+
+      .lb-poster {
+        aspect-ratio: 2 / 3;
+        border-radius: 8px;
+        background: linear-gradient(180deg, rgba(60, 70, 85, 0.9) 0%, rgba(28, 34, 43, 0.95) 100%);
+        border: 1px solid rgba(132, 146, 170, 0.35);
+      }
+
+      .chrome-sites {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.5rem;
+      }
+
+      .chrome-sites a {
+        display: flex;
+        align-items: center;
+        gap: 0.45rem;
+        padding: 0.55rem 0.65rem;
+        border-radius: 7px;
+        text-decoration: none;
+        color: #143357;
+        background: rgba(255, 255, 255, 0.66);
+        border: 1px solid rgba(177, 198, 220, 0.8);
+      }
+
+      .site-logo {
+        width: 16px;
+        height: 16px;
+        flex: 0 0 16px;
+      }
+
+      .spotify-profile-card {
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+        margin: 0 0 0.8rem;
+        padding: 0.45rem 0.55rem;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .spotify-profile-photo {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+
+      .spotify-profile-link,
+      .lb-profile-link {
+        color: #8effb1;
+        text-decoration: underline;
+      }
+
+      .lb-logo {
+        width: 20px;
+        height: 20px;
+      }
+
+      .lb-meta {
+        margin: 0 0 0.85rem;
+      }
+
+      .lb-profile {
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+        margin: 0 0 0.9rem;
+      }
+
+      .lb-profile-photo {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+
+      .lb-poster-grid img {
+        width: 100%;
+        height: 100%;
+        border-radius: 8px;
+        object-fit: cover;
+        display: block;
+      }
+
+      .lb-empty {
+        margin: 0;
+        color: #c6d2df;
+      }
+
+      @keyframes start-menu-slide-up {
+        from {
+          opacity: 0;
+          transform: translateY(24px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes start-menu-slide-down {
+        from {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        to {
+          opacity: 0;
+          transform: translateY(24px);
+        }
+      }
+
+      @media (max-width: 800px) {
+        .spotify-embed-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body class="windows-body">
+    <div class="windows-screen">
+      <div class="desktop-icons" aria-label="Desktop apps">
+        <button id="desktopChrome" class="desktop-app" type="button" aria-label="Open Chrome">
+          <span class="desktop-icon chrome" aria-hidden="true"></span>
+          <span>Chrome</span>
+        </button>
+        <button id="desktopSpotify" class="desktop-app" type="button" aria-label="Open Spotify">
+          <span class="desktop-icon spotify" aria-hidden="true"></span>
+          <span>Spotify</span>
+        </button>
+        <button id="desktopMovie" class="desktop-app" type="button" aria-label="Open Letterboxd">
+          <span class="desktop-icon movie" aria-hidden="true"></span>
+          <span>Letterboxd</span>
+        </button>
+      </div>
+
+      <div id="windowLayer" class="window-layer" aria-live="polite"></div>
+
+      <footer class="taskbar" aria-label="Windows 7 style taskbar">
+        <button id="appWindows" class="start-button" type="button" aria-label="Windows app">
+          <img class="start-logo" src="Source/App004.ico" alt="" aria-hidden="true" />
+        </button>
+        <div class="task-icons">
+          <button id="appChrome" class="task-button" type="button" aria-label="Chrome app">
+            <span class="task-icon chrome" aria-hidden="true"></span>
+          </button>
+          <button id="appSpotify" class="task-button" type="button" aria-label="Spotify app">
+            <span class="task-icon spotify" aria-hidden="true"></span>
+          </button>
+          <button id="appMovie" class="task-button" type="button" aria-label="Movie app">
+            <span class="task-icon movie" aria-hidden="true"></span>
+          </button>
+        </div>
+        <div id="clock" class="clock"></div>
+      </footer>
+    </div>
+
+    <script>
+      const clock = document.getElementById("clock");
+      const windowLayer = document.getElementById("windowLayer");
+      const openWindows = new Map();
+      let topZIndex = 1;
+
+      const appDefinitions = {
+        windows: {
+          title: "Windows",
+          contentClass: "windows-theme",
+          html: '<div class="start-menu"><div class="start-col"><h3>Pinned</h3><ul class="start-list"><li>Google Chrome</li><li>Spotify</li><li>Letterboxd</li><li>Documents</li><li>Pictures</li></ul></div><div class="start-col"><h3>Quick Links</h3><ul class="start-list"><li>Computer</li><li>Downloads</li><li>Music</li><li>Control Panel</li><li>Run...</li></ul></div></div>',
+        },
+        spotify: {
+          title: "Spotify",
+          contentClass: "spotify-theme",
+          html: '<div class="spotify-header"><img class="spotify-logo" src="Source/spotify2.ico" alt="" aria-hidden="true" /><h2>Spotify</h2></div><div class="spotify-profile-card"><img class="spotify-profile-photo" src="Source/spotify%20pfp.jpg" alt="Spotify profile" /><a class="spotify-profile-link" href="https://open.spotify.com/user/mamakosai?si=6f35ae2dec744364" target="_blank" rel="noopener noreferrer">Kono profile</a></div><div class="spotify-embed-grid"><iframe src="https://open.spotify.com/embed/album/392p3shh2jkxUxY2VHvlH8?utm_source=generator" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe><iframe src="https://open.spotify.com/embed/album/7vS5TDQ9oUakyWAtBqlldL?utm_source=generator" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe><iframe src="https://open.spotify.com/embed/album/3u20OXh03DjCUzbf8XcGTq?utm_source=generator" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe><iframe src="https://open.spotify.com/embed/album/2xqdV2npgZXiowXCAYwd2Y?utm_source=generator" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe><iframe src="https://open.spotify.com/embed/album/3o1TOhMkU5FFMSJMDhXfdF?utm_source=generator" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe><iframe src="https://open.spotify.com/embed/album/2pOEFqvfxp5uUQ8vQEmVA0?utm_source=generator" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>',
+        },
+        chrome: {
+          title: "Google Chrome",
+          contentClass: "chrome-theme",
+          html: '<div class="chrome-shell"><div class="chrome-topbar"><span class="chrome-dot"></span><span class="chrome-dot"></span><span class="chrome-dot"></span><div class="chrome-address">Search Google or type a URL</div></div><div class="chrome-card"><h2>Sites from design.html</h2><ul class="chrome-sites"><li><a href="https://www.colorzilla.com/gradient-editor/" target="_blank" rel="noopener noreferrer"><img class="site-logo" src="https://www.google.com/s2/favicons?sz=64&domain_url=https://www.colorzilla.com" alt="" aria-hidden="true" />ColorZilla Gradient</a></li><li><a href="https://paletton.com/#uid=1000u0kllllaFw0g0qFqFg0w0aF" target="_blank" rel="noopener noreferrer"><img class="site-logo" src="https://www.google.com/s2/favicons?sz=64&domain_url=https://paletton.com" alt="" aria-hidden="true" />Paletton</a></li><li><a href="https://www.durves.com/" target="_blank" rel="noopener noreferrer"><img class="site-logo" src="https://www.google.com/s2/favicons?sz=64&domain_url=https://www.durves.com" alt="" aria-hidden="true" />Durves</a></li><li><a href="https://nahuelgerth.de/" target="_blank" rel="noopener noreferrer"><img class="site-logo" src="https://www.google.com/s2/favicons?sz=64&domain_url=https://nahuelgerth.de" alt="" aria-hidden="true" />Nahuel Gerth</a></li><li><a href="https://drajmarsh.bitbucket.io/supershapes.html" target="_blank" rel="noopener noreferrer"><img class="site-logo" src="https://www.google.com/s2/favicons?sz=64&domain_url=https://drajmarsh.bitbucket.io" alt="" aria-hidden="true" />Super Shapes</a></li><li><a href="https://notwk.london/" target="_blank" rel="noopener noreferrer"><img class="site-logo" src="https://www.google.com/s2/favicons?sz=64&domain_url=https://notwk.london" alt="" aria-hidden="true" />Notwk London</a></li><li><a href="https://tools.dia.tv/index.html" target="_blank" rel="noopener noreferrer"><img class="site-logo" src="https://www.google.com/s2/favicons?sz=64&domain_url=https://tools.dia.tv" alt="" aria-hidden="true" />DIA Tools</a></li><li><a href="https://www.aspektedesrasters.de/" target="_blank" rel="noopener noreferrer"><img class="site-logo" src="https://www.google.com/s2/favicons?sz=64&domain_url=https://www.aspektedesrasters.de" alt="" aria-hidden="true" />Aspekte des Rasters</a></li><li><a href="https://antlii.work/Generative" target="_blank" rel="noopener noreferrer"><img class="site-logo" src="https://www.google.com/s2/favicons?sz=64&domain_url=https://antlii.work" alt="" aria-hidden="true" />Antlii Generative</a></li><li><a href="https://spacetypegenerator.com/" target="_blank" rel="noopener noreferrer"><img class="site-logo" src="https://www.google.com/s2/favicons?sz=64&domain_url=https://spacetypegenerator.com" alt="" aria-hidden="true" />Space Type Generator</a></li><li><a href="https://svg.designcode.io/" target="_blank" rel="noopener noreferrer"><img class="site-logo" src="https://www.google.com/s2/favicons?sz=64&domain_url=https://svg.designcode.io" alt="" aria-hidden="true" />SVG Designcode</a></li><li><a href="https://halftonemaker.com/" target="_blank" rel="noopener noreferrer"><img class="site-logo" src="https://www.google.com/s2/favicons?sz=64&domain_url=https://halftonemaker.com" alt="" aria-hidden="true" />Halftone Maker</a></li><li><a href="https://photogradient.com/" target="_blank" rel="noopener noreferrer"><img class="site-logo" src="https://www.google.com/s2/favicons?sz=64&domain_url=https://photogradient.com" alt="" aria-hidden="true" />Photo Gradient</a></li><li><a href="https://50watts.com/" target="_blank" rel="noopener noreferrer"><img class="site-logo" src="https://www.google.com/s2/favicons?sz=64&domain_url=https://50watts.com" alt="" aria-hidden="true" />50 Watts</a></li><li><a href="https://cari.institute/aesthetics" target="_blank" rel="noopener noreferrer"><img class="site-logo" src="https://www.google.com/s2/favicons?sz=64&domain_url=https://cari.institute" alt="" aria-hidden="true" />CARI Aesthetics</a></li><li><a href="https://archives.design/" target="_blank" rel="noopener noreferrer"><img class="site-logo" src="https://www.google.com/s2/favicons?sz=64&domain_url=https://archives.design" alt="" aria-hidden="true" />Archives Design</a></li><li><a href="https://frutigeraeroarchive.org/" target="_blank" rel="noopener noreferrer"><img class="site-logo" src="https://www.google.com/s2/favicons?sz=64&domain_url=https://frutigeraeroarchive.org" alt="" aria-hidden="true" />Frutiger Aero Archive</a></li><li><a href="https://www.cosmos.so/home" target="_blank" rel="noopener noreferrer"><img class="site-logo" src="https://www.google.com/s2/favicons?sz=64&domain_url=https://www.cosmos.so" alt="" aria-hidden="true" />Cosmos</a></li><li><a href="https://nekoweb.org/" target="_blank" rel="noopener noreferrer"><img class="site-logo" src="https://www.google.com/s2/favicons?sz=64&domain_url=https://nekoweb.org" alt="" aria-hidden="true" />Nekoweb</a></li></ul></div></div>',
+        },
+        movie: {
+          title: "Letterboxd",
+          contentClass: "letterboxd-theme",
+          html: '<div class="lb-header"><span class="lb-dot orange"></span><span class="lb-dot green"></span><span class="lb-dot blue"></span><h2>Letterboxd</h2></div><div class="lb-profile"><img class="lb-profile-photo" src="Source/spotify%20pfp.jpg" alt="Letterboxd profile" /><div><p class="lb-meta">@mamakosaitam</p><a class="lb-profile-link" href="https://letterboxd.com/mamakosaitam/" target="_blank" rel="noopener noreferrer">Open profile on Letterboxd</a></div></div><div class="lb-poster-grid" data-lb-feed><p class="lb-empty">Loading recent films...</p></div>',
+        },
+      };
+
+      function loadLetterboxdFeed(winEl) {
+        const grid = winEl.querySelector("[data-lb-feed]");
+        if (!grid) {
+          return;
+        }
+
+        const rssUrl = encodeURIComponent("https://letterboxd.com/mamakosaitam/rss/");
+        const endpoint = "https://api.rss2json.com/v1/api.json?rss_url=" + rssUrl;
+
+        fetch(endpoint)
+          .then(function (res) {
+            return res.json();
+          })
+          .then(function (data) {
+            if (!data || !Array.isArray(data.items) || data.items.length === 0) {
+              throw new Error("No feed data");
+            }
+
+            const movies = data.items.slice(0, 6);
+            grid.innerHTML = movies
+              .map(function (item) {
+                const title = item.title || "Film";
+                const source = item.thumbnail || item.content || item.description || "";
+                const match = String(source).match(/<img[^>]+src=\"([^\"]+)\"/i);
+                const poster = item.thumbnail || (match ? match[1] : "");
+                const link = item.link || "https://letterboxd.com/mamakosaitam/";
+
+                if (!poster) {
+                  return '<a class="lb-poster" href="' + link + '" target="_blank" rel="noopener noreferrer"></a>';
+                }
+
+                return (
+                  '<a class="lb-poster" href="' +
+                  link +
+                  '" target="_blank" rel="noopener noreferrer"><img src="' +
+                  poster +
+                  '" alt="' +
+                  title.replace(/"/g, "") +
+                  ' poster" loading="lazy" referrerpolicy="no-referrer" /></a>'
+                );
+              })
+              .join("");
+          })
+          .catch(function () {
+            grid.innerHTML = '<p class="lb-empty">Could not load films now.</p>';
+          });
+      }
+
+      function closeWindow(appId) {
+        const existing = openWindows.get(appId);
+        if (!existing) {
+          return;
+        }
+
+        if (appId === "windows") {
+          existing.classList.remove("is-opening");
+          existing.classList.add("is-closing");
+          setTimeout(function () {
+            openWindows.delete(appId);
+            existing.remove();
+          }, 180);
+          return;
+        }
+
+        openWindows.delete(appId);
+        existing.remove();
+      }
+
+      function updateClock() {
+        const now = new Date();
+        clock.textContent = now.toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
+        });
+      }
+
+      function bringToFront(winEl) {
+        topZIndex += 1;
+        winEl.style.zIndex = String(topZIndex);
+      }
+
+      function makeDraggable(winEl, titleBar) {
+        let dragOffsetX = 0;
+        let dragOffsetY = 0;
+        let dragging = false;
+
+        titleBar.addEventListener("mousedown", function (event) {
+          dragging = true;
+          bringToFront(winEl);
+          const rect = winEl.getBoundingClientRect();
+          dragOffsetX = event.clientX - rect.left;
+          dragOffsetY = event.clientY - rect.top;
+          event.preventDefault();
+        });
+
+        document.addEventListener("mousemove", function (event) {
+          if (!dragging) {
+            return;
+          }
+
+          const layerRect = windowLayer.getBoundingClientRect();
+          let nextLeft = event.clientX - layerRect.left - dragOffsetX;
+          let nextTop = event.clientY - layerRect.top - dragOffsetY;
+
+          const maxLeft = Math.max(0, layerRect.width - winEl.offsetWidth);
+          const maxTop = Math.max(0, layerRect.height - winEl.offsetHeight);
+
+          nextLeft = Math.min(Math.max(0, nextLeft), maxLeft);
+          nextTop = Math.min(Math.max(0, nextTop), maxTop);
+
+          winEl.style.left = nextLeft + "px";
+          winEl.style.top = nextTop + "px";
+        });
+
+        document.addEventListener("mouseup", function () {
+          dragging = false;
+        });
+      }
+
+      function createWindow(appId) {
+        const app = appDefinitions[appId];
+        const winEl = document.createElement("article");
+        winEl.className = "app-window";
+        winEl.setAttribute("data-app-id", appId);
+
+        const isWindowsMenu = appId === "windows";
+
+        if (isWindowsMenu) {
+          winEl.classList.add("start-menu-window", "is-opening");
+        }
+
+        winEl.innerHTML =
+          (isWindowsMenu
+            ? ''
+            : '<div class="window-titlebar"><span>' +
+                app.title +
+                '</span><button class="window-close" type="button" aria-label="Close">X</button></div>') +
+          '<div class="window-content ' +
+          app.contentClass +
+          '">' +
+          app.html +
+          "</div>";
+
+        const layerRect = windowLayer.getBoundingClientRect();
+        if (isWindowsMenu) {
+          winEl.style.left = "8px";
+          winEl.style.top = Math.max(8, layerRect.height - 448) + "px";
+        } else {
+          const left = Math.max(12, layerRect.width / 2 - 310 + openWindows.size * 22);
+          const top = Math.max(12, layerRect.height / 2 - 210 + openWindows.size * 22);
+          winEl.style.left = left + "px";
+          winEl.style.top = top + "px";
+        }
+
+        const titleBar = winEl.querySelector(".window-titlebar");
+        const closeBtn = winEl.querySelector(".window-close");
+
+        if (closeBtn) {
+          closeBtn.addEventListener("click", function () {
+            closeWindow(appId);
+          });
+        }
+
+        winEl.addEventListener("mousedown", function () {
+          bringToFront(winEl);
+        });
+
+        if (titleBar) {
+          makeDraggable(winEl, titleBar);
+        }
+        windowLayer.appendChild(winEl);
+        openWindows.set(appId, winEl);
+        bringToFront(winEl);
+
+        if (isWindowsMenu) {
+          setTimeout(function () {
+            winEl.classList.remove("is-opening");
+          }, 220);
+        }
+
+        if (appId === "movie") {
+          loadLetterboxdFeed(winEl);
+        }
+      }
+
+      function openOrFocus(appId) {
+        if (openWindows.has(appId)) {
+          bringToFront(openWindows.get(appId));
+          return;
+        }
+
+        createWindow(appId);
+      }
+
+      document.getElementById("appWindows").addEventListener("click", function () {
+        if (openWindows.has("windows")) {
+          closeWindow("windows");
+          return;
+        }
+
+        openOrFocus("windows");
+      });
+
+      document.getElementById("appSpotify").addEventListener("click", function () {
+        openOrFocus("spotify");
+      });
+
+      document.getElementById("appChrome").addEventListener("click", function () {
+        openOrFocus("chrome");
+      });
+
+      document.getElementById("appMovie").addEventListener("click", function () {
+        openOrFocus("movie");
+      });
+
+      document.getElementById("desktopChrome").addEventListener("click", function () {
+        openOrFocus("chrome");
+      });
+
+      document.getElementById("desktopSpotify").addEventListener("click", function () {
+        openOrFocus("spotify");
+      });
+
+      document.getElementById("desktopMovie").addEventListener("click", function () {
+        openOrFocus("movie");
+      });
+
+      updateClock();
+      setInterval(updateClock, 1000);
+    </script>
+  </body>
+</html>
