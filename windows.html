@@ -146,7 +146,6 @@
       }
 
       .clock {
-        margin-left: auto;
         padding: 0 10px;
         height: 30px;
         border: 1px solid rgba(176, 226, 255, 0.55);
@@ -180,11 +179,13 @@
       }
 
       .app-window.start-menu-window {
-        width: min(460px, calc(100vw - 16px));
-        min-height: 440px;
+        width: min(380px, calc(100vw - 16px));
+        height: auto;
         border-radius: 10px 10px 0 0;
         border-bottom: none;
         background: rgba(32, 87, 146, 0.6);
+        bottom: 0 !important;
+        top: auto !important;
       }
 
       .app-window.start-menu-window.is-opening {
@@ -267,9 +268,8 @@
 
       .start-menu {
         display: grid;
-        grid-template-columns: 1.15fr 0.85fr;
+        grid-template-columns: 1fr;
         gap: 0.9rem;
-        min-height: 390px;
       }
 
       .start-col {
@@ -311,7 +311,7 @@
       }
 
       .start-app-icon.viewer {
-        background-image: url("App022.ico");
+        background-image: url("Source/App022.ico");
       }
 
       .start-app-launch {
@@ -398,12 +398,27 @@
         background: linear-gradient(180deg, rgba(239, 246, 255, 0.42) 0%, rgba(214, 228, 246, 0.34) 100%);
       }
 
+      .app-window.chrome-window {
+        height: min(440px, calc(100vh - 92px));
+      }
+
+      .app-window.chrome-window .window-content.chrome-theme {
+        min-height: 0;
+        height: calc(100% - 34px);
+        padding: 0.85rem;
+        display: flex;
+      }
+
       .chrome-shell {
         border: 1px solid rgba(156, 178, 204, 0.82);
         border-radius: 11px;
         overflow: hidden;
         background: rgba(255, 255, 255, 0.28);
         backdrop-filter: blur(5px);
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+        width: 100%;
       }
 
       .chrome-topbar {
@@ -448,6 +463,15 @@
         padding: 0.9rem;
         background: transparent;
         border: none;
+      }
+
+      .chrome-scroll {
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto;
+        padding: 0.2rem 0.2rem 0.7rem;
+        display: grid;
+        gap: 0.55rem;
       }
 
       .chrome-sites {
@@ -671,7 +695,7 @@
             <span class="task-icon movie" aria-hidden="true"></span>
           </button>
         </div>
-        <div id="clock" class="clock"></div>
+        <div id="clock" class="clock" style="margin-left: auto;"></div>
       </footer>
     </div>
 
@@ -703,6 +727,16 @@
         ["Nekoweb", "https://nekoweb.org/", "https://www.google.com/s2/favicons?sz=64&domain_url=https://nekoweb.org"],
       ];
 
+      const featuredSites = [
+        ["WikiSpeedrun", "https://wikispeedrun.org/", "https://www.google.com/s2/favicons?sz=64&domain_url=https://wikispeedrun.org"],
+        ["Google Arts & Culture", "https://artsandculture.google.com/", "https://www.google.com/s2/favicons?sz=64&domain_url=https://artsandculture.google.com"],
+        ["Lines", "https://lines.chromeexperiments.com/", "https://www.google.com/s2/favicons?sz=64&domain_url=https://lines.chromeexperiments.com"],
+        ["Neal.fun", "https://neal.fun/", "https://www.google.com/s2/favicons?sz=64&domain_url=https://neal.fun"],
+        ["Beat Blender", "https://experiments.withgoogle.com/ai/beat-blender/view/", "https://www.google.com/s2/favicons?sz=64&domain_url=https://experiments.withgoogle.com"],
+        ["Eternal Jukebox", "https://eternalbox.floriegl.tech/jukebox_index.html", "https://www.google.com/s2/favicons?sz=64&domain_url=https://eternalbox.floriegl.tech"],
+        ["Because Recollection", "http://www.because-recollection.com/", "https://www.google.com/s2/favicons?sz=64&domain_url=http://www.because-recollection.com"],
+      ];
+
       const spotifyAlbums = [
         "392p3shh2jkxUxY2VHvlH8",
         "7vS5TDQ9oUakyWAtBqlldL",
@@ -721,7 +755,7 @@
       });
 
       function getWindowsHtml() {
-        return '<div class="start-menu"><div class="start-col"><h3>Pinned</h3><ul class="start-list"><li class="start-app-item"><span class="start-app-icon chrome" aria-hidden="true"></span><span>Google Chrome</span></li><li class="start-app-item"><span class="start-app-icon spotify" aria-hidden="true"></span><span>Spotify</span></li><li class="start-app-item"><span class="start-app-icon letterboxd" aria-hidden="true"></span><span>Letterboxd</span></li><li class="start-app-item start-app-launch" data-open-viewer role="button" tabindex="0" aria-label="Open Windows Photo Viewer"><span class="start-app-icon viewer" aria-hidden="true"></span><span>Windows Photo Viewer</span></li><li>Documents</li><li>Pictures</li></ul></div><div class="start-col"><h3>Quick Links</h3><ul class="start-list"><li>Computer</li><li>Downloads</li><li>Music</li><li>Control Panel</li><li>Run...</li></ul></div></div>';
+        return '<div class="start-menu"><div class="start-col"><h3>Pinned</h3><ul class="start-list"><li class="start-app-item"><span class="start-app-icon chrome" aria-hidden="true"></span><span>Google Chrome</span></li><li class="start-app-item"><span class="start-app-icon spotify" aria-hidden="true"></span><span>Spotify</span></li><li class="start-app-item"><span class="start-app-icon letterboxd" aria-hidden="true"></span><span>Letterboxd</span></li><li class="start-app-item start-app-launch" data-open-viewer role="button" tabindex="0" aria-label="Open Windows Photo Viewer"><span class="start-app-icon viewer" aria-hidden="true"></span><span>Windows Photo Viewer</span></li><li class="start-app-item start-app-launch" data-logout role="button" tabindex="0" aria-label="Log out"><span style="width:16px;height:16px;background-image:url(\'Source/Net004.ico\');background-size:16px;background-repeat:no-repeat;display:inline-block;" aria-hidden="true"></span><span>Log Out</span></li></ul></div></div>';
       }
 
       function getViewerHtml() {
@@ -729,13 +763,19 @@
       }
 
       function getChromeHtml() {
+        const featuredItems = featuredSites
+          .map(function (site) {
+            return '<li><a href="' + site[1] + '" target="_blank" rel="noopener noreferrer"><img class="site-logo" src="' + site[2] + '" alt="" aria-hidden="true" />' + site[0] + "</a></li>";
+          })
+          .join("");
+
         const siteItems = designSites
           .map(function (site) {
             return '<li><a href="' + site[1] + '" target="_blank" rel="noopener noreferrer"><img class="site-logo" src="' + site[2] + '" alt="" aria-hidden="true" />' + site[0] + "</a></li>";
           })
           .join("");
 
-        return '<div class="chrome-shell"><div class="chrome-topbar"><span class="chrome-dot"></span><span class="chrome-dot"></span><span class="chrome-dot"></span><form class="chrome-address-form" data-chrome-url-form><input class="chrome-address" type="text" placeholder="Type a URL and press Enter" autocomplete="off" /></form></div><div class="chrome-card"><h2>Sites</h2><ul class="chrome-sites">' + siteItems + "</ul></div></div>";
+        return '<div class="chrome-shell"><div class="chrome-topbar"><span class="chrome-dot"></span><span class="chrome-dot"></span><span class="chrome-dot"></span><form class="chrome-address-form" data-chrome-url-form><input class="chrome-address" type="text" placeholder="Type a URL and press Enter" autocomplete="off" /></form></div><div class="chrome-scroll"><div class="chrome-card"><h2>Featured</h2><ul class="chrome-sites">' + featuredItems + '</ul></div><div class="chrome-card"><h2>Diseño</h2><ul class="chrome-sites">' + siteItems + "</ul></div></div></div>";
       }
 
       function getSpotifyHtml() {
@@ -754,8 +794,8 @@
 
       const appDefinitions = {
         windows: { title: "Windows", contentClass: "windows-theme", html: getWindowsHtml, startMenu: true },
-        viewer: { title: "Windows Photo Viewer", contentClass: "viewer-theme", html: getViewerHtml, titleIcon: "App022.ico" },
-        chrome: { title: "Google Chrome", contentClass: "chrome-theme", html: getChromeHtml },
+        viewer: { title: "Windows Photo Viewer", contentClass: "viewer-theme", html: getViewerHtml, titleIcon: "Source/App022.ico" },
+        chrome: { title: "Google Chrome", contentClass: "chrome-theme", html: getChromeHtml, windowClass: "chrome-window" },
         spotify: { title: "Spotify", contentClass: "spotify-theme", html: getSpotifyHtml },
         movie: { title: "Letterboxd", contentClass: "letterboxd-theme", html: getLetterboxdHtml },
       };
@@ -965,25 +1005,41 @@
 
       function wireWindowsMenuActions(winEl) {
         const viewerLaunch = winEl.querySelector("[data-open-viewer]");
-        if (!viewerLaunch) {
-          return;
-        }
-
-        function openViewerFromMenu() {
-          openOrFocus("viewer");
-          closeWindow("windows");
-        }
-
-        viewerLaunch.addEventListener("click", function () {
-          openViewerFromMenu();
-        });
-
-        viewerLaunch.addEventListener("keydown", function (event) {
-          if (event.key === "Enter" || event.key === " ") {
-            event.preventDefault();
-            openViewerFromMenu();
+        if (viewerLaunch) {
+          function openViewerFromMenu() {
+            openOrFocus("viewer");
+            closeWindow("windows");
           }
-        });
+
+          viewerLaunch.addEventListener("click", function () {
+            openViewerFromMenu();
+          });
+
+          viewerLaunch.addEventListener("keydown", function (event) {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              openViewerFromMenu();
+            }
+          });
+        }
+
+        const logoutBtn = winEl.querySelector("[data-logout]");
+        if (logoutBtn) {
+          function handleLogout() {
+            window.location.href = "index.html";
+          }
+
+          logoutBtn.addEventListener("click", function () {
+            handleLogout();
+          });
+
+          logoutBtn.addEventListener("keydown", function (event) {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              handleLogout();
+            }
+          });
+        }
       }
 
       function createWindow(appId) {
@@ -995,6 +1051,10 @@
         const isWindowsMenu = Boolean(app.startMenu);
         if (isWindowsMenu) {
           winEl.classList.add("start-menu-window", "is-opening");
+        }
+
+        if (app.windowClass) {
+          winEl.classList.add(app.windowClass);
         }
 
         const bodyHtml = typeof app.html === "function" ? app.html() : app.html;

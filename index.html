@@ -8,25 +8,187 @@
   </head>
   <body>
     <main class="desktop" aria-label="Desktop folder rename view">
-      <section id="folderItem" class="folder-item">
-        <img class="folder-logo" src="Source/Folder121.ico" alt="" aria-hidden="true" />
+      <section class="folder-carousel" aria-label="Folder carousel">
+        <div id="folderCarousel" class="folder-track" role="listbox" aria-label="Folders">
+          <button type="button" class="folder-node" data-folder data-key="windows" data-target="windows.html" data-bg="windows" role="option" aria-label="Windows folder">
+            <img class="folder-logo" src="Source/Folder121.ico" alt="" aria-hidden="true" />
+          </button>
+          <button type="button" class="folder-node" data-folder data-key="chrome" data-target="chrome-folder.html" data-bg="chrome" role="option" aria-label="Chrome folder">
+            <img class="folder-logo" src="Source/chrome3.ico" alt="" aria-hidden="true" />
+          </button>
+          <button type="button" class="folder-node" data-folder data-key="spotify" data-target="spotify-folder.html" data-bg="spotify" role="option" aria-label="Spotify folder">
+            <img class="folder-logo" src="Source/spotify2.ico" alt="" aria-hidden="true" />
+          </button>
+          <button type="button" class="folder-node" data-folder data-key="movie" data-target="movie-folder.html" data-bg="movie" role="option" aria-label="Movie folder">
+            <img class="folder-logo" src="Source/vista_movie.ico" alt="" aria-hidden="true" />
+          </button>
+          <button type="button" class="folder-node" data-folder data-key="viewer" data-target="viewer-folder.html" data-bg="viewer" role="option" aria-label="Photo viewer folder">
+            <img class="folder-logo" src="Source/App022.ico" alt="" aria-hidden="true" />
+          </button>
+        </div>
+
         <label class="sr-only" for="folderName">Folder name</label>
         <input id="folderName" class="folder-name" name="folderName" type="text" value="" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" autofocus />
       </section>
     </main>
 
     <script>
-      const REDIRECT_URL = "windows.html";
-
+      const folderCarousel = document.getElementById("folderCarousel");
+      const folderItems = Array.from(folderCarousel.querySelectorAll("[data-folder]"));
       const folderInput = document.getElementById("folderName");
-      const folderItem = document.getElementById("folderItem");
-      let actualWord = "";
+      let activeIndex = 0;
+      let wheelDelta = 0;
+      let wheelLocked = false;
+      let pointerStartX = null;
+      let pendingPassword = "";
+
+      function openActiveFolder() {
+        const activeItem = folderItems[activeIndex];
+        if (!activeItem) {
+          return;
+        }
+
+        const targetUrl = activeItem.dataset.target;
+        if (!targetUrl) {
+          return;
+        }
+
+        window.location.assign(targetUrl);
+      }
 
       function wiggleFolder() {
-        folderItem.classList.remove("is-wiggle");
-        void folderItem.offsetWidth;
-        folderItem.classList.add("is-wiggle");
+        const activeItem = folderItems[activeIndex];
+        if (!activeItem) {
+          return;
+        }
+
+        activeItem.classList.remove("is-wiggle");
+        void activeItem.offsetWidth;
+        activeItem.classList.add("is-wiggle");
       }
+
+      function renderCarousel() {
+        const total = folderItems.length;
+        const angleStep = (Math.PI * 2) / total;
+        const radiusX = total <= 5 ? 250 : 290;
+        const radiusZ = 165;
+
+        folderItems.forEach(function (item, index) {
+          const offset = index - activeIndex;
+          const angle = offset * angleStep;
+          const x = Math.sin(angle) * radiusX;
+          const z = Math.cos(angle) * radiusZ;
+          const normalizedDepth = (z + radiusZ) / (radiusZ * 2);
+          const y = -(1 - normalizedDepth) * 150; /*El ultimo valor cambia  el angulo de las carpetas*/
+
+          const scale = 0.58 + normalizedDepth * 0.5;
+          const opacity = 0.28 + normalizedDepth * 0.72;
+          const rotateY = -Math.sin(angle) * 26;
+
+          item.style.transform =
+            "translate(-50%, -50%) " +
+            "translateX(" + x + "px) " +
+            "translateY(" + y + "px) " +
+            "translateZ(" + z + "px) " +
+            "rotateY(" + rotateY + "deg) " +
+            "scale(" + scale + ")";
+
+          item.style.opacity = String(opacity);
+          item.style.zIndex = String(Math.round(100 + z));
+          item.style.pointerEvents = "auto";
+          item.classList.toggle("is-active", index === activeIndex);
+          item.setAttribute("aria-selected", index === activeIndex ? "true" : "false");
+        });
+
+        const activeItem = folderItems[activeIndex];
+        const bg = activeItem ? activeItem.dataset.bg : "";
+        if (bg) {
+          document.body.setAttribute("data-active-folder", bg);
+        }
+      }
+
+      function cycleFolder(step) {
+        const total = folderItems.length;
+        activeIndex = (activeIndex + step + total) % total;
+        renderCarousel();
+      }
+
+      folderItems.forEach(function (item, index) {
+        item.addEventListener("click", function () {
+          if (index === activeIndex) {
+            openActiveFolder();
+            return;
+          }
+
+          activeIndex = index;
+          renderCarousel();
+          folderInput.focus();
+        });
+      });
+
+      document.addEventListener("keydown", function (event) {
+        if (event.key === "ArrowRight") {
+          event.preventDefault();
+          cycleFolder(1);
+          return;
+        }
+
+        if (event.key === "ArrowLeft") {
+          event.preventDefault();
+          cycleFolder(-1);
+        }
+      });
+
+      folderCarousel.addEventListener(
+        "wheel",
+        function (event) {
+          if (wheelLocked) {
+            return;
+          }
+
+          const dominantDelta = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
+          wheelDelta += dominantDelta;
+
+          if (Math.abs(wheelDelta) < 42) {
+            return;
+          }
+
+          event.preventDefault();
+          cycleFolder(wheelDelta > 0 ? 1 : -1);
+          wheelDelta = 0;
+          wheelLocked = true;
+
+          setTimeout(function () {
+            wheelLocked = false;
+          }, 150);
+        },
+        { passive: false }
+      );
+
+      folderCarousel.addEventListener("pointerdown", function (event) {
+        pointerStartX = event.clientX;
+      });
+
+      folderCarousel.addEventListener("pointerup", function (event) {
+        if (pointerStartX === null) {
+          return;
+        }
+
+        const deltaX = event.clientX - pointerStartX;
+        pointerStartX = null;
+
+        if (Math.abs(deltaX) < 36) {
+          return;
+        }
+
+        cycleFolder(deltaX < 0 ? 1 : -1);
+      });
+
+      folderCarousel.addEventListener("pointercancel", function () {
+        pointerStartX = null;
+      });
+
+      renderCarousel();
 
       folderInput.addEventListener("keydown", function (event) {
         if (event.key !== "Enter") {
@@ -34,23 +196,29 @@
         }
 
         event.preventDefault();
-        const typedWord = folderInput.value.trim();
+        const typedWord = folderInput.value.trim().toLowerCase();
 
         if (!typedWord) {
           return;
         }
 
-        const normalizedWord = typedWord.toLowerCase();
+        if (typedWord !== pendingPassword) {
+          if (pendingPassword) {
+            pendingPassword = "";
+            folderInput.value = "";
+            wiggleFolder();
+            return;
+          }
 
-        if (normalizedWord !== actualWord) {
-          actualWord = normalizedWord;
+          pendingPassword = typedWord;
           folderInput.value = "";
           wiggleFolder();
           return;
         }
 
+        pendingPassword = "";
         folderInput.value = "";
-        window.location.assign(REDIRECT_URL);
+        openActiveFolder();
       });
     </script>
   </body>
