@@ -209,6 +209,29 @@
         user-select: none;
       }
 
+      .window-title-meta {
+        display: flex;
+        align-items: center;
+        gap: 0.45rem;
+        min-width: 0;
+      }
+
+      .window-title-icon {
+        width: 16px;
+        height: 16px;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: contain;
+        filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.35));
+        flex: 0 0 16px;
+      }
+
+      .window-title-text {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
       .window-close {
         width: 24px;
         height: 22px;
@@ -260,6 +283,102 @@
         font-size: 0.95rem;
       }
 
+      .start-app-item {
+        display: flex;
+        align-items: center;
+        gap: 0.45rem;
+      }
+
+      .start-app-icon {
+        width: 16px;
+        height: 16px;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 16px 16px;
+        filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.35));
+      }
+
+      .start-app-icon.chrome {
+        background-image: url("Source/chrome3.ico");
+      }
+
+      .start-app-icon.spotify {
+        background-image: url("Source/spotify2.ico");
+      }
+
+      .start-app-icon.letterboxd {
+        background-image: url("Source/vista_movie.ico");
+      }
+
+      .start-app-icon.viewer {
+        background-image: url("App022.ico");
+      }
+
+      .start-app-launch {
+        cursor: pointer;
+        user-select: none;
+      }
+
+      .start-app-launch:hover {
+        background: rgba(255, 255, 255, 0.22);
+      }
+
+      .start-app-launch:focus-visible {
+        outline: 2px solid rgba(201, 232, 255, 0.9);
+        outline-offset: 1px;
+      }
+
+      .viewer-frame {
+        width: 100%;
+        aspect-ratio: 4 / 3;
+        border-radius: 8px;
+        overflow: hidden;
+        background: rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(209, 229, 249, 0.2);
+      }
+
+      .viewer-image {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        display: block;
+      }
+
+      .viewer-controls {
+        margin-top: 0.55rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.45rem;
+      }
+
+      .viewer-button {
+        min-width: 32px;
+        height: 28px;
+        border: 1px solid rgba(193, 224, 255, 0.4);
+        border-radius: 6px;
+        color: #e8f5ff;
+        background: rgba(255, 255, 255, 0.1);
+        cursor: pointer;
+      }
+
+      .viewer-count {
+        font-size: 0.78rem;
+      }
+
+      .window-content.viewer-theme {
+        color: #eef7ff;
+        background: linear-gradient(145deg, rgba(39, 91, 149, 0.86) 0%, rgba(20, 50, 91, 0.8) 100%);
+      }
+
+      .viewer-shell h2 {
+        margin: 0 0 0.7rem;
+      }
+
+      .viewer-shell .viewer-frame {
+        min-height: 300px;
+      }
+
       .start-list {
         margin: 0;
         padding: 0;
@@ -296,6 +415,10 @@
         border-bottom: 1px solid rgba(167, 185, 206, 0.7);
       }
 
+      .chrome-address-form {
+        flex: 1;
+      }
+
       .chrome-dot {
         width: 10px;
         height: 10px;
@@ -304,13 +427,20 @@
       }
 
       .chrome-address {
-        flex: 1;
+        width: 100%;
+        box-sizing: border-box;
         border-radius: 999px;
         padding: 0.4rem 0.8rem;
         font-size: 0.82rem;
         color: #344f6b;
         background: rgba(255, 255, 255, 0.68);
         border: 1px solid rgba(167, 185, 206, 0.72);
+        outline: none;
+      }
+
+      .chrome-address:focus {
+        border-color: rgba(85, 138, 195, 0.9);
+        box-shadow: 0 0 0 2px rgba(125, 174, 228, 0.32);
       }
 
       .chrome-card {
@@ -582,8 +712,20 @@
         "2pOEFqvfxp5uUQ8vQEmVA0",
       ];
 
+      const galleryFileNames = [
+        "jumpc_thor009010.jpg","jumpc_thor010011.jpg","jumpc_thor011012.jpg","jumpc_thor013014.jpg","jumpc_thor014015.jpg","jumpc_thor015016.jpg","jumpc_thor021022.jpg","jumpc_thor022023.jpg","jumpc_thor023024.jpg","jumpc_thor026027.jpg","jumpc_thor027028.jpg","jumpc_thor028029.jpg","jumpc_thor030031.jpg","jumpc_thor031032.jpg","jumpc_thor033034.jpg","jumpc_thor034035.jpg","jumpc_thor035036.jpg","jumpc_thor036037.jpg","jumpc_thor037038.jpg","jumpc_thor038039.jpg","jumpc_thor039040.jpg","jumpc_thor040041.jpg","jumpc_thor041042.jpg","jumpc_thor043044.jpg","jumpc_thor044045.jpg","jumpc_thor045046.jpg","jumpc_thor046047.jpg","jumpc_thor047048.jpg","jumpc_thor048049.jpg","jumpc_thor049050.jpg","jumpc_thor050051.jpg","jumpc_thor051052.jpg","jumpc_thor056057.jpg","jumpc_thor057058.jpg","jumpc_thor058059.jpg","jumpc_thor059060.jpg","jumpc_thor060061.jpg","jumpc_thor061062.jpg","jumpc_thor062063.jpg","jumpc_thor064065.jpg","jumpc_thor065066.jpg","jumpc_thor066067.jpg","jumpc_thor067068.jpg","jumpc_thor068069.jpg","jumpc_thor069070.jpg","jumpc_thor070071.jpg","jumpc_thor071072.jpg","jumpc_thor076077.jpg","jumpc_thor077078.jpg","jumpc_thor078079.jpg","jumpc_thor079080.jpg","jumpc_thor080081.jpg","jumpc_thor081082.jpg","jumpc_thor082083.jpg","jumpc_thor083084.jpg","jumpc_thor084085.jpg","jumpc_thor085086.jpg","jumpc_thor086087.jpg","jumpc_thor087088.jpg","jumpc_thor088089.jpg","jumpc_thor089090.jpg","jumpc_thor090091.jpg","merged (1).jpg","merged (2).jpg","merged (3).jpg","merged (4).jpg","merged.jpg",
+      ];
+
+      const galleryImages = galleryFileNames.map(function (fileName) {
+        return "Source/gallery/" + encodeURIComponent(fileName);
+      });
+
       function getWindowsHtml() {
-        return '<div class="start-menu"><div class="start-col"><h3>Pinned</h3><ul class="start-list"><li>Google Chrome</li><li>Spotify</li><li>Letterboxd</li><li>Documents</li><li>Pictures</li></ul></div><div class="start-col"><h3>Quick Links</h3><ul class="start-list"><li>Computer</li><li>Downloads</li><li>Music</li><li>Control Panel</li><li>Run...</li></ul></div></div>';
+        return '<div class="start-menu"><div class="start-col"><h3>Pinned</h3><ul class="start-list"><li class="start-app-item"><span class="start-app-icon chrome" aria-hidden="true"></span><span>Google Chrome</span></li><li class="start-app-item"><span class="start-app-icon spotify" aria-hidden="true"></span><span>Spotify</span></li><li class="start-app-item"><span class="start-app-icon letterboxd" aria-hidden="true"></span><span>Letterboxd</span></li><li class="start-app-item start-app-launch" data-open-viewer role="button" tabindex="0" aria-label="Open Windows Photo Viewer"><span class="start-app-icon viewer" aria-hidden="true"></span><span>Windows Photo Viewer</span></li><li>Documents</li><li>Pictures</li></ul></div><div class="start-col"><h3>Quick Links</h3><ul class="start-list"><li>Computer</li><li>Downloads</li><li>Music</li><li>Control Panel</li><li>Run...</li></ul></div></div>';
+      }
+
+      function getViewerHtml() {
+        return '<div class="viewer-shell"><div class="viewer-frame"><img class="viewer-image" data-gallery-image src="" alt="Gallery image" /></div><div class="viewer-controls"><button class="viewer-button" type="button" data-gallery-prev aria-label="Previous image">◀</button><span class="viewer-count" data-gallery-count>1 / 1</span><button class="viewer-button" type="button" data-gallery-next aria-label="Next image">▶</button></div></div>';
       }
 
       function getChromeHtml() {
@@ -593,7 +735,7 @@
           })
           .join("");
 
-        return '<div class="chrome-shell"><div class="chrome-topbar"><span class="chrome-dot"></span><span class="chrome-dot"></span><span class="chrome-dot"></span><div class="chrome-address">Search Google or type a URL</div></div><div class="chrome-card"><h2>Sites</h2><ul class="chrome-sites">' + siteItems + "</ul></div></div>";
+        return '<div class="chrome-shell"><div class="chrome-topbar"><span class="chrome-dot"></span><span class="chrome-dot"></span><span class="chrome-dot"></span><form class="chrome-address-form" data-chrome-url-form><input class="chrome-address" type="text" placeholder="Type a URL and press Enter" autocomplete="off" /></form></div><div class="chrome-card"><h2>Sites</h2><ul class="chrome-sites">' + siteItems + "</ul></div></div>";
       }
 
       function getSpotifyHtml() {
@@ -612,6 +754,7 @@
 
       const appDefinitions = {
         windows: { title: "Windows", contentClass: "windows-theme", html: getWindowsHtml, startMenu: true },
+        viewer: { title: "Windows Photo Viewer", contentClass: "viewer-theme", html: getViewerHtml, titleIcon: "App022.ico" },
         chrome: { title: "Google Chrome", contentClass: "chrome-theme", html: getChromeHtml },
         spotify: { title: "Spotify", contentClass: "spotify-theme", html: getSpotifyHtml },
         movie: { title: "Letterboxd", contentClass: "letterboxd-theme", html: getLetterboxdHtml },
@@ -729,6 +872,120 @@
           });
       }
 
+      function wireChromeAddress(winEl) {
+        const form = winEl.querySelector("[data-chrome-url-form]");
+        if (!form) {
+          return;
+        }
+
+        form.addEventListener("submit", function (event) {
+          event.preventDefault();
+          const input = form.querySelector(".chrome-address");
+          if (!input) {
+            return;
+          }
+
+          const rawValue = input.value.trim();
+          if (!rawValue) {
+            return;
+          }
+
+          const hasProtocol = /^https?:\/\//i.test(rawValue);
+          const hasSpaces = /\s/.test(rawValue);
+          const looksLikeDomain = /\.|localhost|^\d{1,3}(?:\.\d{1,3}){3}/i.test(rawValue);
+
+          let targetUrl = "";
+          if (hasProtocol) {
+            targetUrl = rawValue;
+          } else if (!hasSpaces && looksLikeDomain) {
+            targetUrl = "https://" + rawValue;
+          } else {
+            targetUrl = "https://www.google.com/search?q=" + encodeURIComponent(rawValue);
+          }
+
+          window.open(targetUrl, "_blank", "noopener,noreferrer");
+        });
+      }
+
+      function wireWindowsPhotoViewer(winEl) {
+        const imageEl = winEl.querySelector("[data-gallery-image]");
+        const countEl = winEl.querySelector("[data-gallery-count]");
+        const prevBtn = winEl.querySelector("[data-gallery-prev]");
+        const nextBtn = winEl.querySelector("[data-gallery-next]");
+
+        if (!imageEl || !countEl || !prevBtn || !nextBtn) {
+          return;
+        }
+
+        if (galleryImages.length === 0) {
+          imageEl.removeAttribute("src");
+          imageEl.alt = "No images found";
+          countEl.textContent = "0 / 0";
+          prevBtn.disabled = true;
+          nextBtn.disabled = true;
+          return;
+        }
+
+        let galleryIndex = 0;
+
+        function renderGalleryImage() {
+          imageEl.src = galleryImages[galleryIndex];
+          imageEl.alt = "Gallery image " + (galleryIndex + 1);
+          countEl.textContent = String(galleryIndex + 1) + " / " + String(galleryImages.length);
+        }
+
+        function showNext() {
+          galleryIndex = (galleryIndex + 1) % galleryImages.length;
+          renderGalleryImage();
+        }
+
+        function showPrev() {
+          galleryIndex = (galleryIndex - 1 + galleryImages.length) % galleryImages.length;
+          renderGalleryImage();
+        }
+
+        prevBtn.addEventListener("click", showPrev);
+        nextBtn.addEventListener("click", showNext);
+
+        imageEl.addEventListener(
+          "wheel",
+          function (event) {
+            event.preventDefault();
+            if (event.deltaY > 0) {
+              showNext();
+            } else {
+              showPrev();
+            }
+          },
+          { passive: false }
+        );
+
+        renderGalleryImage();
+      }
+
+      function wireWindowsMenuActions(winEl) {
+        const viewerLaunch = winEl.querySelector("[data-open-viewer]");
+        if (!viewerLaunch) {
+          return;
+        }
+
+        function openViewerFromMenu() {
+          openOrFocus("viewer");
+          closeWindow("windows");
+        }
+
+        viewerLaunch.addEventListener("click", function () {
+          openViewerFromMenu();
+        });
+
+        viewerLaunch.addEventListener("keydown", function (event) {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            openViewerFromMenu();
+          }
+        });
+      }
+
       function createWindow(appId) {
         const app = appDefinitions[appId];
         const winEl = document.createElement("article");
@@ -745,7 +1002,9 @@
         winEl.innerHTML =
           (isWindowsMenu
             ? ""
-            : '<div class="window-titlebar"><span>' + app.title + '</span><button class="window-close" type="button" aria-label="Close">X</button></div>') +
+            : '<div class="window-titlebar"><div class="window-title-meta">' +
+                (app.titleIcon ? '<span class="window-title-icon" style="background-image:url(\'' + app.titleIcon + '\')" aria-hidden="true"></span>' : "") +
+                '<span class="window-title-text">' + app.title + '</span></div><button class="window-close" type="button" aria-label="Close">X</button></div>') +
           '<div class="window-content ' + app.contentClass + '">' + bodyHtml + "</div>";
 
         const layerRect = windowLayer.getBoundingClientRect();
@@ -784,10 +1043,20 @@
           setTimeout(function () {
             winEl.classList.remove("is-opening");
           }, 220);
+
+          wireWindowsMenuActions(winEl);
         }
 
         if (appId === "movie") {
           loadLetterboxdFeed(winEl);
+        }
+
+        if (appId === "chrome") {
+          wireChromeAddress(winEl);
+        }
+
+        if (appId === "viewer") {
+          wireWindowsPhotoViewer(winEl);
         }
       }
 
